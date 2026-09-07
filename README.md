@@ -20,7 +20,7 @@ officer is alerted and makes the final response call.
       hook, and Telegram entrypoint all tested end to end against a live
       bot token and working.
 - [x] **Layer 2: Flare Compute Extension** (confidential compute): completed.
-      See [`flare-compute-extension/`](./fce-extension-scaffold/) for the
+      See [`fce-extension-scaffold/`](./fce-extension-scaffold/) for the
       TEE extension code and setup instructions.
 - [x] **BOT Chain deployment (exploratory)**: the same contract also
       deployed to BOT Chain testnet and mainnet, unrelated to the Flare
