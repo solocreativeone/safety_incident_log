@@ -1,0 +1,61 @@
+# Env files
+.env*
+*.env
+!*.example
+scratch.sh
+# Coston/Coston2 proxy configs (contain DB credentials)
+config/proxy/extension_proxy.coston.toml
+config/proxy/extension_proxy.coston.docker.toml
+config/proxy/extension_proxy.coston2.toml
+config/proxy/extension_proxy.coston2.docker.toml
+config/extension.env
+
+# Build artifacts
+out/
+cache/
+docker/sim_dump/
+abi.json
+cast_interface.txt
+extracted_abi.json
+facet_abi.json
+facet.json
+formatted_abi.json
+implementations.json
+
+# Logs
+*.log
+ext_logs.txt
+
+# macOS
+.DS_Store
+
+# go.work is generated on demand by start-services.sh for USE_LOCAL_SIBLINGS=1
+# (points host builds at sibling tee-node / tee-proxy). Never committed.
+go.work
+go.work.sum
+
+# Compiled Go binaries
+tools/start-*
+tools/allow-*
+tools/deploy-*
+tools/register-*
+tools/run-*
+tools/audit-*
+tools/pause-*
+tools/query-*
+tools/set-*
+tools/test-*
+tools/verify-*
+
+# Generated contract bindings (produced by scripts/generate-bindings.sh)
+tools/pkg/contracts/*/autogen.go
+tools/pkg/contracts/*/*.abi
+tools/pkg/contracts/*/*.bin
+
+docs/superpowers
+notes/
+
+# Private deployment guide (SSH, redeploy instructions)
+DEPLOYMENT.md
+
+config/**/*.log

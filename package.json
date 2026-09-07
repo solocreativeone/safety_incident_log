@@ -1,0 +1,15 @@
+{
+  "name": "safety-incident-flare",
+  "version": "0.1.0",
+  "description": "AI-triaged, verifiable safety-incident logging on Flare (Coston2)",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:coston2": "hardhat run scripts/deploy.js --network coston2"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.0"
+  }
+}
