@@ -10,15 +10,15 @@ logged on-chain by the caller (see chain.py).
 import os
 from dataclasses import dataclass
 from enum import IntEnum
+from typing import Literal
 
+from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from pydantic import BaseModel, Field
 
-# Initialize client safely (automatically reads GEMINI_API_KEY from environment)
-client = genai.Client()
-
-MODEL = "gemini-3.5-flash-lite"
+# Supported production flash model
+MODEL = "gemini-3.6-flash"
 
 
 class Severity(IntEnum):
@@ -32,10 +32,14 @@ class Severity(IntEnum):
 ON_CHAIN_THRESHOLD = Severity.MEDIUM
 
 
-# Define Pydantic schema for Gemini's structured output response
+# Define Pydantic schema using Literal to enforce exact string enums from Gemini
 class TriageResponseSchema(BaseModel):
-    severity: str = Field(description="Must be LOW, MEDIUM, HIGH, or CRITICAL")
-    driving_factor: str = Field(description="Must be injury, equipment, or near_miss")
+    severity: Literal["LOW", "MEDIUM", "HIGH", "CRITICAL"] = Field(
+        description="Must be LOW, MEDIUM, HIGH, or CRITICAL"
+    )
+    driving_factor: Literal["injury", "equipment", "near_miss"] = Field(
+        description="Must be injury, equipment, or near_miss"
+    )
     summary: str = Field(description="One sentence, plain language, what happened and where")
     justification: str = Field(description="One sentence explaining why this tier was chosen")
 
@@ -92,8 +96,29 @@ class TriageResult:
         }
 
 
+def _get_client() -> genai.Client:
+    """Instantiate client, explicitly ensuring environment variables are loaded."""
+    # Force load of .env file from the current working directory
+    load_dotenv()
+    
+    # Check for the new variable name, then fall back to the old one
+    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    
+    if not api_key:
+        raise ValueError(
+            "API key not found! Please ensure you have a .env file containing "
+            "GEMINI_API_KEY=your_key_here, or that it is exported in your terminal."
+        )
+    
+    # Clean up any accidental spaces, newlines, or quotes from the .env file
+    api_key = api_key.strip(' "\'\n')
+        
+    return genai.Client(api_key=api_key)
+
+
 def classify_incident(report_text: str) -> TriageResult:
     """Always-on AI severity classification for a single incident report."""
+    client = _get_client()
     response = client.models.generate_content(
         model=MODEL,
         contents=RUBRIC_PROMPT.format(report_text=report_text),
@@ -104,11 +129,10 @@ def classify_incident(report_text: str) -> TriageResult:
         ),
     )
 
-    # Gemini directly parses the response into the Pydantic schema via response.parsed
     data: TriageResponseSchema = response.parsed
 
     return TriageResult(
-        severity=Severity[data.severity],
+        severity=Severity[data.severity.upper()],
         driving_factor=data.driving_factor,
         summary=data.summary,
         justification=data.justification,
