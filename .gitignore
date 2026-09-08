@@ -26,3 +26,5 @@ docker/sim_dump/
 # --- OS / editor cruft ---
 .DS_Store
 *.swp
+
+.vscode/
