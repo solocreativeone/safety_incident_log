@@ -51,7 +51,7 @@ async def handle_report(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         # Medium+ only: log on-chain and alert the officer. Low stays
         # off the officer's radar entirely - that's the point of triage.
         try:
-            chain_info = log_incident_on_chain(result, update.effective_user.id, network="coston2")
+            chain_info = log_incident_on_chain(result, update.effective_user.id, network="botchain_mainnet")
         except Exception:
             logger.exception("On-chain logging failed for a %s incident", result.severity.name)
             # Do not block the officer alert on a chain failure — safety first,
