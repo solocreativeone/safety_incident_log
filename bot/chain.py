@@ -1,4 +1,94 @@
-from triage import TriageResult
+import json
+import os
+
+from web3 import Web3
+from web3.middleware import ExtraDataToPOAMiddleware
+
+from triage import Severity, TriageResult
+
+# One place defining every chain this bot can write to. Adding a new
+# chain later means adding one entry here — never a hardcoded URL
+# scattered somewhere else in the file.
+NETWORKS = {
+    "coston2": {
+        "rpc_url": os.environ.get("COSTON2_RPC_URL", "https://coston2-api.flare.network/ext/C/rpc"),
+        "chain_id": 114,
+        "contract_address": os.environ.get("COSTON2_INCIDENT_LOG_ADDRESS"),
+        "private_key": os.environ.get("PRIVATE_KEY"),
+        "explorer": "https://coston2-explorer.flare.network",
+        "poa": False,
+    },
+    "botchain_testnet": {
+        "rpc_url": "https://rpc.bohr.life",
+        "chain_id": 968,
+        "contract_address": os.environ.get("BOTCHAIN_TESTNET_INCIDENT_LOG_ADDRESS"),
+        "private_key": os.environ.get("BOTCHAIN_PRIVATE_KEY"),
+        "explorer": "https://scan.bohr.life",
+        "poa": True,
+    },
+    "botchain_mainnet": {
+        "rpc_url": "https://rpc.botchain.ai",
+        "chain_id": 677,
+        "contract_address": os.environ.get("BOTCHAIN_MAINNET_INCIDENT_LOG_ADDRESS"),
+        "private_key": os.environ.get("BOTCHAIN_PRIVATE_KEY"),
+        "explorer": "https://scan.botchain.ai",
+        "poa": True,
+    },
+}
+
+INCIDENT_LOG_ABI = json.loads("""
+[
+  {
+    "inputs": [
+      {"internalType": "bytes32", "name": "recordHash", "type": "bytes32"},
+      {"internalType": "bytes32", "name": "reporterId", "type": "bytes32"},
+      {"internalType": "uint8", "name": "severity", "type": "uint8"}
+    ],
+    "name": "logIncident",
+    "outputs": [{"internalType": "uint256", "name": "id", "type": "uint256"}],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "incidentCount",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
+""")
+
+
+def _client(network: str) -> Web3:
+    net = NETWORKS[network]
+    w3 = Web3(Web3.HTTPProvider(net["rpc_url"]))
+    if net["poa"]:
+        w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
+
+    if not w3.is_connected():
+        raise ConnectionError(f"Could not connect to {network} RPC at {net['rpc_url']}")
+
+    actual_chain_id = w3.eth.chain_id
+    if actual_chain_id != net["chain_id"]:
+        raise RuntimeError(
+            f"Chain ID mismatch for {network}: expected {net['chain_id']}, "
+            f"RPC reports {actual_chain_id}. Refusing to proceed."
+        )
+    return w3
+
+
+def record_hash(result: TriageResult) -> bytes:
+    w3 = Web3()
+    payload = json.dumps(result.record_payload(), sort_keys=True).encode("utf-8")
+    return w3.keccak(payload)
+
+
+def reporter_id_hash(telegram_user_id: str | int) -> bytes:
+    w3 = Web3()
+    return w3.keccak(text=str(telegram_user_id))
+
+
 def log_incident_on_chain(result: TriageResult, telegram_user_id: str | int, network: str = "coston2") -> dict:
     if not result.should_log_on_chain():
         raise ValueError(f"Severity {result.severity.name} is below the on-chain threshold.")
