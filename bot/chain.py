@@ -1,3 +1,4 @@
+from triage import TriageResult
 def log_incident_on_chain(result: TriageResult, telegram_user_id: str | int, network: str = "coston2") -> dict:
     if not result.should_log_on_chain():
         raise ValueError(f"Severity {result.severity.name} is below the on-chain threshold.")
