@@ -14,6 +14,8 @@
       --muted: #9b9ba5;
       --accent: #ff4d4d;
       --accent-soft: rgba(255, 77, 77, 0.1);
+      --accent2: #4d9dff;
+      --accent2-soft: rgba(77, 157, 255, 0.1);
     }
 
     * {
@@ -79,11 +81,15 @@
       letter-spacing: 0.01em;
     }
 
-    .bot-chain {
+    .network-panel {
       padding: 24px;
       border: 1px solid var(--border);
       border-left: 3px solid var(--accent);
       background: var(--panel);
+    }
+
+    .network-panel.testnet {
+      border-left-color: var(--accent2);
     }
 
     .badge {
@@ -100,6 +106,12 @@
       text-transform: uppercase;
     }
 
+    .badge.testnet {
+      border-color: rgba(77, 157, 255, 0.35);
+      background: var(--accent2-soft);
+      color: var(--accent2);
+    }
+
     .links {
       display: flex;
       flex-wrap: wrap;
@@ -109,6 +121,11 @@
     a {
       color: var(--accent);
       text-decoration: none;
+    }
+
+    .network-panel.testnet a,
+    .testnet-section a {
+      color: var(--accent2);
     }
 
     a:hover,
@@ -172,6 +189,22 @@
       color: var(--accent);
     }
 
+    .testnet-section {
+      padding: 20px;
+      border: 1px dashed var(--border);
+      background: transparent;
+    }
+
+    .testnet-section h2 {
+      margin-bottom: 8px;
+    }
+
+    .testnet-section .section-note {
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
     footer {
       padding-top: 8px;
       border-top: 1px solid var(--border);
@@ -212,30 +245,46 @@
     <header>
       <h1>Safety Incident Log</h1>
       <p class="description">An AI-triaged, verifiable workplace safety-incident reporting system.</p>
-      <p class="intro">Workers report incidents via Telegram in plain language. An AI layer classifies severity in real time, and incidents are logged on-chain as a tamper-evident, timestamped record.</p>
+      <p class="intro">Workers report incidents via Telegram in plain language. An AI layer assists with severity classification in real time, and incidents are logged on-chain as a tamper-evident, timestamped record.</p>
     </header>
 
-    <section class="bot-chain">
-      <span class="badge">Built on Flare</span>
+    <section class="network-panel">
+      <span class="badge">Built on BOT Chain</span>
       <div class="links">
-        <a href="https://flare.network" target="_blank" rel="noopener">flare.network</a>
-        <a href="https://coston2-explorer.flare.network" target="_blank" rel="noopener">Coston2 Explorer</a>
+        <a href="https://botchain.ai" target="_blank" rel="noopener">botchain.ai</a>
+        <a href="https://scan.botchain.ai" target="_blank" rel="noopener">BOT Chain Explorer</a>
       </div>
     </section>
 
     <section>
       <h2>Try it</h2>
       <a class="try-link" href="https://t.me/safety_incident_log_bot" target="_blank" rel="noopener">Open Telegram Bot</a>
-      <p class="note">Live on Coston2 testnet.</p>
+      <p class="note">Live on BOT Chain mainnet.</p>
     </section>
 
     <section>
-      <h2>Coston2 Testnet Contract</h2>
+      <h2>BOT Chain Mainnet Contract</h2>
       <div class="contract-row">
-        <a class="contract-address" href="https://coston2-explorer.flare.network/address/0x49dA1A09D36bF8F525D20c560154a7aFCDeB77b3" target="_blank" rel="noopener" id="contractLink">0x49dA1A09D36bF8F525D20c560154a7aFCDeB77b3</a>
+        <a class="contract-address" href="https://scan.botchain.ai/address/0xec2b5D2A93FA0b8CBD2175815508F4AbF88f6de1" target="_blank" rel="noopener" id="contractLink">0xec2b5D2A93FA0b8CBD2175815508F4AbF88f6de1</a>
         <button class="copy-button" type="button" id="copyButton">Copy</button>
       </div>
-      <p class="note">Updated post-submission to add reporterId. Originally judged deployment: <a href="https://coston2-explorer.flare.network/address/0x9cc807c3c1FaFc9B5cF3673C08004293721cA161" target="_blank" rel="noopener">0x9cc807c3c1FaFc9B5cF3673C08004293721cA161</a></p>
+      <p class="note">Includes reporterId for pseudonymous attribution. All reports are submitted by a single relayer wallet (the bot's backend signer) on behalf of workers.</p>
+    </section>
+
+    <section class="testnet-section">
+      <h2>Testnet Development History (Flare Coston2)</h2>
+      <p class="section-note">Earlier development and test reports, kept for reference. These predate the BOT Chain mainnet deployment above and are not part of live production usage.</p>
+      <div class="network-panel testnet" style="margin-bottom: 18px;">
+        <span class="badge testnet">Flare Coston2 Testnet</span>
+        <div class="links">
+          <a href="https://flare.network" target="_blank" rel="noopener">flare.network</a>
+          <a href="https://coston2-explorer.flare.network" target="_blank" rel="noopener">Coston2 Explorer</a>
+        </div>
+      </div>
+      <div class="contract-row">
+        <a class="contract-address" href="https://coston2-explorer.flare.network/address/0x49dA1A09D36bF8F525D20c560154a7aFCDeB77b3" target="_blank" rel="noopener">0x49dA1A09D36bF8F525D20c560154a7aFCDeB77b3</a>
+      </div>
+      <p class="note">Updated test contract with reporterId. Originally judged deployment: <a href="https://coston2-explorer.flare.network/address/0x9cc807c3c1FaFc9B5cF3673C08004293721cA161" target="_blank" rel="noopener">0x9cc807c3c1FaFc9B5cF3673C08004293721cA161</a></p>
     </section>
 
     <footer>
@@ -246,7 +295,7 @@
   </main>
 
   <script>
-    const contractAddress = "0x49dA1A09D36bF8F525D20c560154a7aFCDeB77b3";
+    const contractAddress = "0xec2b5D2A93FA0b8CBD2175815508F4AbF88f6de1";
     const copyButton = document.getElementById("copyButton");
 
     copyButton.addEventListener("click", async () => {
