@@ -16,6 +16,8 @@
       --accent-soft: rgba(20, 220, 172, 0.1);
       --accent2: #c10f45;
       --accent2-soft: rgba(193, 15, 69, 0.1);
+      --tg-color: #24a1de;
+      --tg-hover: #1f8ec4;
     }
 
     * {
@@ -134,18 +136,27 @@
     }
 
     .try-link {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 10px 16px;
-      border: 1px solid var(--accent);
+      border: 1px solid var(--tg-color);
       border-radius: 6px;
-      background: var(--accent);
-      color: #0a0a0f;
+      background: var(--tg-color);
+      color: #ffffff;
       font-weight: 700;
+    }
+
+    .try-link svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
     }
 
     .try-link:hover,
     .try-link:focus-visible {
-      background: #3fe8c4;
+      background: var(--tg-hover);
+      border-color: var(--tg-hover);
       text-decoration: none;
     }
 
@@ -258,7 +269,12 @@
 
     <section>
       <h2>Try it</h2>
-      <a class="try-link" href="https://t.me/safety_incident_log_bot" target="_blank" rel="noopener">Open Telegram Bot</a>
+      <a class="try-link" href="https://t.me/safety_incident_log_bot" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.28c-.15.68-.55.84-1.12.52l-3.05-2.25-1.47 1.42c-.16.16-.3.3-.61.3l.22-3.1 5.64-5.1c.25-.22-.05-.34-.38-.12l-6.97 4.39-3-.94c-.65-.2-.66-.65.14-.97l11.72-4.52c.54-.2 1.02.13.85.99z"/>
+        </svg>
+        <span>Open Telegram Bot</span>
+      </a>
       <p class="note">Live on BOT Chain mainnet.</p>
     </section>
 
